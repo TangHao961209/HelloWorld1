@@ -1,0 +1,11 @@
+git学习：
+       git push出现 ：更新被拒绝，因为您当前分支的最新提交落后于其对应的远程分支。
+       git log 查看与远程是否没有更新代码
+
+       git reset本地与远程最新的一笔
+	   git  stash save  保存本地修改 ==>git status . 红颜色的就是本地修改
+       git pull origin master   更新代码，与远程保持一致
+       git stash pop    如果有冲突，本地解决冲突
+       git add
+       git commit -m
+       git push origin master
