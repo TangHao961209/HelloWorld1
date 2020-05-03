@@ -1,7 +1,7 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 OBJS = HelloWorld.o
-CFLAGS=-DTEST_ADD
+CFLAGS=-DTEST_ADD -DCat_ADD
 ifeq ($(BUILD_MODE),debug)
 	CFLAGS += -g
 else ifeq ($(BUILD_MODE),run)
