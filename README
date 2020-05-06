@@ -9,3 +9,74 @@ git学习：
        git add
        git commit -m
        git push origin master
+       
+    git拉取另一分支代码
+    git clone -b branchname   xxxxx   
+android.bp学习：
+	   加宏，对应的地方添加cflags:-D   
+android.mk学习:	   
+	include $(call all-subdir-makefiles)  返回一个位于当前'my-dir'路径的子目录列表。
+	只有动态库可以被 install/copy到应用程序包(APK). 静态库则可以被链接入动态库。
+	LOCAL_PATH := $(call my-dir) 用于返回Android.mk所在目录的路径。
+	   
+shell学习：
+	   建议软连接  sudo ln -s  源文件 目标文件      
+	   sudo ln -s sudo ln -s   /usr/local/python3.7/bin/python3.7         /usr/bin/python
+Camera Provider	   
+在Treble架构下，存在了3个binder设备，分别是/dev/binder、/dev/vndbinder、/dev/hwbinder，上层需要通过binder库来访问这些binder设备，而/dev/binder和/dev/vndbinder都是由libbinder来访问，因此需要指定打开的binder设备。
+		android::ProcessState::initWithDriver("/dev/vndbinder");   
+		
+CameraProvider_2_4.cpp的HIDL_FETCH_ICameraProvider函数根据instance获取调用不同的provider方法
+legacy/0  ==> getProviderImpl<LegacyCameraProviderImpl_2_4>()
+																 ==>CameraProvider<IMPL> *provider = new CameraProvider<IMPL>();		
+external/0  ==> getProviderImpl<ExternalCameraProviderImpl_2_4>()
+CameraProvider() : impl() {}  ==>调用对应的instance构造函数LegacyCameraProviderImpl_2_4.cpp
+LegacyCameraProviderImpl_2_4.cpp的构造函数调用了==>initialize()==>下面的代码
+
+camera_module_t *rawModule;
+    int err = hw_get_module(CAMERA_HARDWARE_MODULE_ID,
+            (const hw_module_t **)&rawModule);
+    if (err < 0) {
+        ALOGE("Could not load camera HAL module: %d (%s)", err, strerror(-err));
+        return true;
+    }
+
+    mModule = new CameraModule(rawModule);
+    err = mModule->init();	  ==>调用了camera_module_t结构体中的init函数
+
+最后调用registerReference(fqName, name)向hwservicemanager注册。    
+
+
+
+==============================0506=========================
+HAL V3与V1最大的本质区别，我认为就是把帧的参数和帧的图像数据绑定到了一起，比如V1的时候一张preview上来的YUV帧，
+APP是不知道这个YUV帧采用的Gain和曝光时间究竟是多少。但是在V3里面，每一帧都有一个数据结构来描述，其中包括了帧的
+参数和帧的数据，当APP发送一个request的时候是需要指定使用什么样的参数，到request返回的时候，返回数据中就有图像
+数据和相关的参数配置。
+CameraService.cpp 的CameraService::onFirstRef  ==> enumerateProviders() ==> mCameraProviderManager->setUpVendorTags();
+加载vendor tag
+ // Setup vendor tags before we call get_camera_info the first time
+ // because HAL might need to setup static vendor keys in get_camera_info
+ // TODO: maybe put this into CameraProviderManager::initialize()?
+        mCameraProviderManager->setUpVendorTags();
+        
+QCamera3VendorTags.cpp的get_vendor_tag_ops 完成/system/media/camera/include/system/camera_vendor_tags.h 的vendor_tag_ops_t结构体的映射；
+结构体中的函数在    QCamera3VendorTags.cpp中实现。
+
+get_tag_count;  //返回vendor tag的个数，有多少个返回多少个
+get_all_tags;  //把所有vendor tag挨个放在service传下来的uint32_t * tag_array里面，这样上层就知道每一个tag对应的序号值了
+get_section_name;//获取vendor tag的section对应的section名称，比如可以把某几个tag放在一个section里面，其它的放在其它的section里面.
+get_tag_name用于获取每一个tag的名称
+get_tag_type这个函数返回tag对应的设置数据的类型，可以用TYPE_INT32， TYPE_FLOAT等多种数据格式，取决于需求
+
+参数传递
+Parameters::updateRequest  ==> res = request->update(ANDROID_LED_TRANSMIT,
+                                      &transmitDefault, 1);
+CameraMetadat.h 调用了update函数
+ /**
+     * Update metadata entry. Will create entry if it doesn't exist already, and
+     * will reallocate the buffer if insufficient space exists. Overloaded for
+     * the various types of valid data.
+     */                                    
+                                      
+    	
