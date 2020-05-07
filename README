@@ -72,11 +72,104 @@ get_tag_type这个函数返回tag对应的设置数据的类型，可以用TYPE_
 参数传递
 Parameters::updateRequest  ==> res = request->update(ANDROID_LED_TRANSMIT,
                                       &transmitDefault, 1);
-CameraMetadat.h 调用了update函数
+CameraMetadat.h 调用了update函数  ==>最终调用 CameraMetadata::updateImpl
+==>最终调用update_camera_metadata_entry或者add_camera_metadata_entry是
+通过find_camera_metadata_entry看该TAG是否存在
  /**
      * Update metadata entry. Will create entry if it doesn't exist already, and
      * will reallocate the buffer if insufficient space exists. Overloaded for
      * the various types of valid data.
-     */                                    
-                                      
-    	
+     */       
+     
+在QCamera3VendorTags.cpp中通过struct tag_info_t来维护一个tag的相关属性     
+typedef struct vendor_tag_info {
+    const char *tag_name;
+    uint8_t     tag_type;
+} vendor_tag_info_t; 
+其中tag_name为对应section下不同tag的name值 ，tag_type指定了这个tag所维护的数据类型。
+enum {
+    // Unsigned 8-bit integer (uint8_t)
+    TYPE_BYTE = 0,
+    // Signed 32-bit integer (int32_t)
+    TYPE_INT32 = 1,
+    // 32-bit float (float)
+    TYPE_FLOAT = 2,
+    // Signed 64-bit integer (int64_t)
+    TYPE_INT64 = 3,
+    // 64-bit float (double)
+    TYPE_DOUBLE = 4,
+    // A 64-bit fraction (camera_metadata_rational_t)
+    TYPE_RATIONAL = 5,
+    // Number of type fields
+    NUM_TYPES
+};    
+一个section中的tag以vendor_tag_info_t数组维护
+vendor_tag_info_t qcamera3_cds[QCAMERA3_CDS_END - QCAMERA3_CDS_START] = {
+    { "cds_mode", TYPE_INT32 },
+    { "cds_info", TYPE_BYTE }
+};                        
+ 
+ CameraMetadata通过camera_metadata来维护数据信息
+camera_metadata_t 结构体定义 /hardware/libhardware/include/hardware/camera_common.h 最初定义==>
+/system/media/camera/include/system/camera_metadata.h      
+一个CameraMetadata数据内存块中组成的最小基本单元是struct camera_metadata_buffer_entry，总的entry数目等信息需要struct camera_metadata_t来维护：
+/system/media/camera/src/camera_metadata.c 的camera_metadata结构体
+struct camera_metadata {
+    metadata_size_t          size;
+    uint32_t                 version;
+    uint32_t                 flags;
+    metadata_size_t          entry_count;//当前实际的entry数目
+    metadata_size_t          entry_capacity;//entry最大可以存储的数目
+    metadata_uptrdiff_t      entries_start; // Offset from camera_metadata
+    metadata_size_t          data_count;//当前占据的数据空间
+    metadata_size_t          data_capacity;//最大可操作的数据容量
+    metadata_uptrdiff_t      data_start; // Offset from camera_metadata
+    uint32_t                 padding;    // padding to 8 bytes boundary
+    metadata_vendor_id_t     vendor_id;
+};   
+
+对于每一个entry主要记录他的所代表的TAG，以及这个TAG的需要存储的数据类型，此外还需要记录这个entry是否是需要一个union offset来表示他当前数据量过大时的数据存储位置                             
+59/**
+60 * A packet of metadata. This is a list of entries, each of which may point to
+61 * its values stored at an offset in data.
+62 *
+63 * It is assumed by the utility functions that the memory layout of the packet
+64 * is as follows:
+65 *
+66 *   |-----------------------------------------------|
+67 *   | camera_metadata_t                             |
+68 *   |                                               |
+69 *   |-----------------------------------------------|
+70 *   | reserved for future expansion                 |
+71 *   |-----------------------------------------------|
+72 *   | camera_metadata_buffer_entry_t #0             |
+73 *   |-----------------------------------------------|
+74 *   | ....                                          |
+75 *   |-----------------------------------------------|
+76 *   | camera_metadata_buffer_entry_t #entry_count-1 |
+77 *   |-----------------------------------------------|
+78 *   | free space for                                |
+79 *   | (entry_capacity-entry_count) entries          |
+80 *   |-----------------------------------------------|
+81 *   | start of camera_metadata.data                 |
+82 *   |                                               |
+83 *   |-----------------------------------------------|
+84 *   | free space for                                |
+85 *   | (data_capacity-data_count) bytes              |
+86 *   |-----------------------------------------------|
+87 *
+88 * With the total length of the whole packet being camera_metadata.size bytes.
+89 *
+90 * In short, the entries and data are contiguous in memory after the metadata
+91 * header.
+92 */    	
+typedef struct camera_metadata_buffer_entry {
+    uint32_t tag;//表示当时这个entry代表的tag值，即上文提到的section中不同的tag index值
+    size_t   count;
+    union {
+        size_t  offset;
+        uint8_t value[4];
+    } data;//如果存储的数据量不大于4则直接存储。否则需要指点一个offset来表示便宜
+    uint8_t  type;//维护的数据类型
+    uint8_t  reserved[3];
+} camera_metadata_buffer_entry_t;
