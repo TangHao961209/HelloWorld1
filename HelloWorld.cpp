@@ -1,5 +1,8 @@
 #include  <stdio.h>
-
+#include <pthread.h>
+#include  "pthread_test.h"
+#include <unistd.h>
+#include <string.h>
 class Cat{
 public:
 	Cat();
@@ -31,6 +34,13 @@ void Cat::getNmae(){
 	printf("Cat's name is %s\n",this->name);
 }
 
+void *ThreadFunc()
+{
+    static int count = 1;
+    printf ("Create thread %d\n", count);
+    count++;
+}
+
 int main(int argc, char **argv) {
 #ifdef TEST_ADD
 	printf("Hello \t world \n");
@@ -46,5 +56,26 @@ int main(int argc, char **argv) {
     cat2.setName(name);
     cat2.getNmae();
 #endif
+    mct_pipeline_thread_data_t  *data;
+    pthread_t tidp;
+    for(int i = 0;i < 10;i++){
+    	if ((pthread_create(&tidp, NULL,checknum,(void*) data)) == -1)
+    	         {
+    	             printf("create error!\n");
+    	             return 1;
+    	         }
+//    	usleep(2000);
+    	//printf("hello");
+//    	int err= pthread_create(&tidp, NULL, ThreadFunc, NULL);
+//    	           if(err != 0){
+//    	               printf("can't create thread: %s\n",strerror(err));
+//    	               break;
+//    	           }
+    	          //usleep(2000);
+    	          //pthread_join(tidp,NULL);
+    }
+    checknum(&data);
 	return 0;
 }
+
+

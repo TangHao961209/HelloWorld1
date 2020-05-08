@@ -173,3 +173,7 @@ typedef struct camera_metadata_buffer_entry {
     uint8_t  type;//维护的数据类型
     uint8_t  reserved[3];
 } camera_metadata_buffer_entry_t;
+
+======================================================
+makefile 
+PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))  ==>获取makefile所在目录的绝对路径
