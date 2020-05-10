@@ -12,9 +12,11 @@ int checknum(void *data){
 	static int i = 0;
 	mct_pipeline_thread_data_t *data1 = (mct_pipeline_thread_data_t *) data;
 	pthread_mutex_lock(&data1->mutex);
+	printf("is lock\n");
 	i++;
-	printf("i = %d \n",i);
+	printf("checksum i = %d \n",i);
     pthread_mutex_unlock(&data1->mutex);
+    printf("is unlock\n");
 	return i;
 }
 

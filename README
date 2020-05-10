@@ -60,8 +60,20 @@ CameraService.cpp 的CameraService::onFirstRef  ==> enumerateProviders() ==> mCa
  // TODO: maybe put this into CameraProviderManager::initialize()?
         mCameraProviderManager->setUpVendorTags();
         
+/**
+     * Sets the global vendor tag descriptor cache to use for this process.
+     * Camera metadata operations that access vendor tags will use the
+     * vendor tag definitions set this way.
+     *设置用于此进程的全局供应商标记描述符缓存。访问供应商标记的相机元数据操作将使用此方式设置的供应商标记定义。成功时返回“确定”或负错误代码。
+     * Returns OK on success, or a negative error code.
+     */
+    static status_t setAsGlobalVendorTagCache(const sp<VendorTagDescriptorCache>& cache);        
+        
 QCamera3VendorTags.cpp的get_vendor_tag_ops 完成/system/media/camera/include/system/camera_vendor_tags.h 的vendor_tag_ops_t结构体的映射；
 结构体中的函数在    QCamera3VendorTags.cpp中实现。
+typedef struct vendor_tag_ops vendor_tag_ops_t;
+此结构包含基本功能，用于枚举供应商定义的一组不可变的相机元数据标记，以及查询有关其结构/类型的静态信息。
+此信息的预期用途是验证camera HAL返回的元数据的结构，并允许供应商定义的元数据标记在面向应用程序的camera API中可见。
 
 get_tag_count;  //返回vendor tag的个数，有多少个返回多少个
 get_all_tags;  //把所有vendor tag挨个放在service传下来的uint32_t * tag_array里面，这样上层就知道每一个tag对应的序号值了
@@ -177,3 +189,94 @@ typedef struct camera_metadata_buffer_entry {
 ======================================================
 makefile 
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))  ==>获取makefile所在目录的绝对路径
+
+======================================================
+camera log开启mm-camera
+vendor/qcom/proprietary/mm-camera/mm-camera2/log_debug/camera_dbg.c中的数组
+  static module_debug_t cam_loginfo[(int)CAM_LAST_MODULE] = {
+    {CAM_GLBL_DBG_ERR, 1,
+        "",         "persist.vendor.camera.global.debug"     }, /* CAM_NO_MODULE     */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<MCT   >", "persist.vendor.camera.mct.debug"        }, /* CAM_MCT_MODULE    */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<SENSOR>", "persist.vendor.camera.sensor.debug"     }, /* CAM_SENSOR_MODULE */
+    {CAM_GLBL_DBG_WARN, 1,
+        "<IFACE >", "persist.vendor.camera.iface.logs"       }, /* CAM_IFACE_MODULE  */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<ISP   >", "persist.vendor.camera.isp.debug"        }, /* CAM_ISP_MODULE    */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<PPROC >", "persist.vendor.camera.pproc.debug.mask" }, /* CAM_PPROC_MODULE  */
+    {CAM_GLBL_DBG_WARN, 1,
+        "<IMGLIB>", "persist.vendor.camera.imglib.logs"      }, /* CAM_IMGLIB_MODULE */
+    {CAM_GLBL_DBG_WARN, 1,
+        "<CPP   >", "persist.vendor.camera.cpp.debug.mask"   }, /* CAM_CPP_MODULE    */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<HAL   >", "persist.vendor.camera.hal.debug"        }, /* CAM_HAL_MODULE    */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<JPEG  >", "persist.vendor.camera.mmstill.logs"     }, /* CAM_JPEG_MODULE   */
+    {CAM_GLBL_DBG_WARN, 1,
+        "<C2D   >", "persist.vendor.camera.c2d.debug.mask"   }, /* CAM_C2D_MODULE    */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<STATS >", "persist.vendor.camera.stats.debug" }, /* CAM_STATS_MODULE  */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<STATS_AF >", "persist.vendor.camera.stats.af.debug"    }, /* CAM_STATS_AF_MODULE   */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<STATS_AEC >", "persist.vendor.camera.stats.aec.debug"  }, /* CAM_STATS_AEC_MODULE  */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<STATS_AWB >", "persist.vendor.camera.stats.awb.debug"  }, /* CAM_STATS_AWB_MODULE  */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<STATS_ASD >", "persist.vendor.camera.stats.asd.debug"  }, /* CAM_STATS_ASD_MODULE  */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<STATS_AFD >", "persist.vendor.camera.stats.afd.debug"  }, /* CAM_STATS_AFD_MODULE  */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<STATS_Q3A >", "persist.vendor.camera.stats.q3a.debug"  }, /* CAM_STATS_Q3A_MODULE  */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<STATS_AIS >", "persist.vendor.camera.stats.is.debug"   }, /* CAM_STATS_IS_MODULE   */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<STATS_HAF >", "persist.vendor.camera.stats.haf.debug"  }, /* CAM_STATS_HAF_MODULE  */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<STATS_CAFSCAN >", "persist.vendor.camera.stats.cafscan"  }, /* CAM_STATS_CAFSCAN_MODULE  */
+    {CAM_GLBL_DBG_ERR, 1,
+        "<SHIM  >", "persist.vendor.camera.shim.debug"          }, /* CAM_SHIM_LAYER    */
+
+  };
+  hardware/qcom/camera/QCamera2/stack/common/cam_types.h .
+  typedef enum {
+    /*back main camera*/
+    CAM_POSITION_BACK,
+    /*front main camera*/
+    CAM_POSITION_FRONT,
+    /*back aux camera*/
+    CAM_POSITION_BACK_AUX,
+    /*front aux camera*/
+    CAM_POSITION_FRONT_AUX
+} cam_position_t;                     ==> camera id 
+
+typedef enum {
+    CAM_STREAM_TYPE_DEFAULT,       /* default stream type */
+    CAM_STREAM_TYPE_PREVIEW,       /* preview */
+    CAM_STREAM_TYPE_POSTVIEW,      /* postview */
+    CAM_STREAM_TYPE_SNAPSHOT,      /* snapshot */
+    CAM_STREAM_TYPE_VIDEO,         /* video */
+    CAM_STREAM_TYPE_CALLBACK,      /* app requested callback */
+    CAM_STREAM_TYPE_IMPL_DEFINED, /* opaque format: could be display, video enc, ZSL YUV */
+    CAM_STREAM_TYPE_METADATA,      /* meta data */
+    CAM_STREAM_TYPE_RAW,           /* raw dump from camif */
+    CAM_STREAM_TYPE_OFFLINE_PROC,  /* offline process */
+    CAM_STREAM_TYPE_PARM,         /* mct internal stream */
+    CAM_STREAM_TYPE_ANALYSIS,     /* analysis stream */
+    CAM_STREAM_TYPE_DEPTH,        /* Depth stream for depth sensor*/
+    CAM_STREAM_TYPE_MAX,
+} cam_stream_type_t;    ==>        流类型
+
+  关键字：
+  stream_type  用于观察当前正在运行的流的流类型
+  command      用于观察从HAL发送到媒体控制器模块的命令类型
+  
+  Stream types are defined in
+  hardware/qcom/camera/QCamera2/stack/common/cam_types.h .
+  
+  typedef struct _mct_stream_info_t mct_stream_info_t  结构体   mct流信息
+
+
+

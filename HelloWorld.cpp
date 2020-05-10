@@ -58,6 +58,7 @@ int main(int argc, char **argv) {
 #endif
     mct_pipeline_thread_data_t  *data;
     pthread_t tidp;
+    //printf("main thread start\n");
     for(int i = 0;i < 10;i++){
     	if ((pthread_create(&tidp, NULL,checknum,(void*) data)) == -1)
     	         {
@@ -74,7 +75,10 @@ int main(int argc, char **argv) {
     	          //usleep(2000);
     	          //pthread_join(tidp,NULL);
     }
-    checknum(&data);
+   // checknum(&data);
+
+    printf("main thread finish\n");
+    pthread_exit(NULL);
 	return 0;
 }
 

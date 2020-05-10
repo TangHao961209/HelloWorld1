@@ -28,16 +28,18 @@ PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 OBJS = HelloWorld.o   pthread_test.o
 
 CFLAGS=-DTEST_ADD -DCat_ADD
+CFLAGS +=  -fpermissive
+
 ifeq ($(BUILD_MODE),debug)
 	CFLAGS += -g
 else ifeq ($(BUILD_MODE),run)
 	CFLAGS += -O2
 else
-	$(error Build mode $(BUILD_MODE) not supported by this Makefile)
+	#$(error Build mode $(BUILD_MODE) not supported by this Makefile)
 endif
-    CFLAGS +=  -fpermissive
 
-HelloWorld:	$(OBJS)
+
+HelloWorld:$(OBJS)
 	$(CXX) -o $@ $^ -lpthread
 $(OBJS):%.o: $(PROJECT_ROOT)%.cpp  $(PROJECT_ROOT)%.h 	
 	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CPPFLAGS) -o $@ $<  -lpthread
