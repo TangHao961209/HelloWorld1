@@ -41,6 +41,11 @@ void *ThreadFunc()
     count++;
 }
 
+int plus1(int a){
+	return a+1;
+}
+
+
 int main(int argc, char **argv) {
 #ifdef TEST_ADD
 	printf("Hello \t world \n");
@@ -56,6 +61,27 @@ int main(int argc, char **argv) {
     cat2.setName(name);
     cat2.getNmae();
 #endif
+    void (*pV)(int) = NULL;
+    int result = 0;
+    pV = plus1;
+    result = ((int(*)(int))pV)(5);
+    printf("result = %d \n",result);
+
+    int **p = NULL;
+    int *p1 = NULL;
+    int a = 1;
+    p1 = &a;
+    p = &p1;
+    printf("a = %d \n",**p);
+    //改变a的值,二级指针改变的值
+    **p = 5;
+    printf("a = %d \n",a);
+
+    int* q[4];  //指针数组
+    //q[0] = &a;
+
+   // *p[0] = &a;
+    printf("指针数组 p[0] = %d",*q[0]);
     mct_pipeline_thread_data_t  *data;
     pthread_t tidp;
     //printf("main thread start\n");

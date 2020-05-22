@@ -277,6 +277,161 @@ typedef enum {
   hardware/qcom/camera/QCamera2/stack/common/cam_types.h .
   
   typedef struct _mct_stream_info_t mct_stream_info_t  结构体   mct流信息
+  
+=============================================================
+模组原理图以及位号图
+上电时序  ==>   i2c的clk 
+mipi信号   ==> mipi的data以及mipi的clk     
+    
 
 
+cam_capability_t *gCamCapability[MM_CAMERA_MAX_NUM_SENSORS]; member in namespace:qcamera   
 
+
+判断是否是cts
+ property_get("vendor.camera.cts.mode", property_value, "0");
+    isCameraCtsMode = atoi(property_value) ? 0 : 1;
+    LOGD("QCamera3HardwareInterface CameraCtsMode = %d", isCameraCtsMode);
+
+    property_get("vendor.camera.cts.verifier.mode", property_value, "0");
+    isCameraCtsVerifierMode = atoi(property_value) ? 0 : 1;
+    LOGD("QCamera3HWI isCameraCtsVerifierMode = %d", isCameraCtsVerifierMode);
+    //End For Camera Cts
+    
+==========
+translate the capability into camera_metadata_t
+
+/*===========================================================================
+ * FUNCTION   : setReprocParameters
+ *
+ * DESCRIPTION: Translate frameworks metadata to HAL metadata structure, and
+ *              return it.
+ *
+ * PARAMETERS :
+ *   @request   : request that needs to be serviced
+ *
+ * RETURN     : success: NO_ERROR
+ *              failure:
+ *==========================================================================*/  
+ 
+ 
+ ===================================================
+ mct_pipeline_t     ==> typedef struct _mct_pipeline mct_pipeline_t;   media_controller.h 中声明   mct_pipeline.h 中定义
+ cam_capability_t
+ 
+ 
+mm_camera_ops_t
+   
+initCapabilities
+
+ION内存共享机制实现vendor 到 hal的数据传输
+open camera过程中有些初始化设置参数需要从vendor层获取，而vendor与hal隶属于不同进程，通过ION机制设置共享内存来实现不同进程间数据共享，下面简要介绍流程：
+在初始化过程中hal层会通过socket将消息发送至vendor层-通知vendor map共享内存。
+
+======================================================
+android C/C++堆栈打印
+#include "utils/CallStack.h"
+函数中加入
+	LOGD("@@##dump callstack========");
+    CallStack stack;
+    stack.update( );
+    stack.log("callstack"); //callstack LOG_TAG
+    LOGD("@@##dump callstack end========");
+    
+对应的android.mk  加入libutilCallStack  ?
+
+开机流程：
+initStaticMetadata调用流程 
+ LegacyCameraProviderImpl_2_4.cpp==>LegacyCameraProviderImpl_2_4()
+																==>initialize()	
+																			   ==>CameraModule::getCameraInfo
+
+
+ 																			                                 ==>mModule->get_camera_info
+																			                                 							==>QCamera2Factory::getCameraInfo
+																			                                 
+																			                                 
+provider初始化流程：
+defaultLazyPassthroughServiceImplementation==>
+											registerPassthroughServiceImplementation ==>
+																						service->registerAsService(name);  																			                                 
+																			                                 
+																			                                 		
+=================================================
+picturetaken      拍照结束关键字  app层
+camera sensor    的三个clk   
+	1.PCLK是由MCLK进行分频而来......
+
+	2.PCLK是个时钟，通过寄存器只能调节它的频率什么的，它是控制像素输出的一个时钟；
+
+	3.在曝光时间的算法中需要知道PCLK的值，是因为在sensor内没有时间观念，只有频率，所以在算曝光计算时需要将所要的曝光的秒数转换为曝光的clock数，同样的
+
+   	Clock数，在不同的频率下代表的时间是不同的，例如同样的1000个clock在12HZ和24HZ下代表的时间就差了二倍。
+
+  	而PClk的值一般是以提供给sensor的MCLK除以sensor内部除频后的值，而每个sensor的除频设计方式不太相同，所以需要对照datasheet才行。
+
+	4.我解释一下pll，PC-camera芯片晶振产生时钟，pll进行倍频输出MCLK给sensor，sensor再通过pll产生合适的PCLK，一般PC-camera芯片输出的MCLK是固定的几个值，
+
+  	而sensor这边输出的PCLK根据调节相应的寄存器在可以输出的值在一定范围内可随意调，sensor输出PCLK和曝光是两个独立的过程，对于曝光可以设置target值进行亮度调整，
+
+  	如果是非SOC sensor可以改变dummy line和dummy pixel来调节帧率，对于水波纹的消除可以根据PCLK可抑制消除，这样的PCLK有约束，如果真可输出频率范围内的频率输出则可以
+
+  	调节dummy pixel来消除。
+
+	5.MCLK = 倍率系数*Pclk
+
+   	MCLK是指芯片的主时钟，由BB提供，是CCM sensor的时钟源，MCLK由sensor处理后变成传输数据所需要的PCLK，PCLK指pixel采样的时钟
+   	
+SOC Sensor 包含Simple ISP 在里头，可以数位处理pixle後，给出YUV 格式的图像
+ex: OV7725
+
+Bayer Sensor 一般指RAW Data Sensor, 需要外部的DSP/ISP 处理
+ex:OV9710/2/5
+
+依方便性而言，SOC Sensor 比较好
+
+若要求影像品质，Bayer Sensor 可以有较多的优化
+
+==============================================
+降低camera帧率；
+
+降低屏幕背光亮度等级；
+
+采用CPU、GPU动态调频调压，并调低CPU、GPU频率下限；
+
+采用thermal-engine.conf 。
+
+================================
+效果文件编译出来后  push 到vendor/lib/ 下，会在system/vendor/lib  自动跟新
+
+
+================================
+powhint.xml
+
+CMOS ==>  RAW
+
+景深：
+HDR:
+PDAF
+CAF
+
+camera功耗包含平台基础值、屏幕、模组、马达、feature、算法、camera app
+平台基础值  ==> 低电流
+屏幕 ==> 最低亮度下，测得电流-平台基础值
+
+模组、马达   ==> 硬件拆解
+算法=开关相关算法      ==>1.代码上passby    2.camera app 开关
+软件功耗= feature、算法、camera app 
+先排除硬件马达和模组，再追层加上软件相关的功耗
+注：模组和马达功耗对整体的影响偏小，姑且先忽略
+主要的功耗影响是屏幕和软件（APP、feature、算法）；
+软件功耗 = 正常模式预览模式下的总功耗 - 亮屏待机的功耗（包含平台功耗、屏幕功耗）
+
+如果是预览也高  对比之前版本   ==>  feature合入导致功耗偏高  ?  就需要进一步的分析feature合入和硬件的功耗
+
+AF、AVDD 和 DVDD 两个电路的电流无法直接测试，需要在每个电路上单独进行飞线测试（预览功耗），然后
+和通过假电池对每个电路测试的结果（包含了AF和预览功耗）做差值；
+
+软件的参考高通文档：
+
+																	                                 		

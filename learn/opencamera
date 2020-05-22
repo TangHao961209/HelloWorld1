@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmlns:UML="http://schema.omg.org/spec/UML/1.3" timestamp="2020-05-21T00:47:49" verified="false" xmi.version="1.2">
+ <XMI.header>
+  <XMI.documentation>
+   <XMI.exporter>umbrello uml modeller http://umbrello.kde.org</XMI.exporter>
+   <XMI.exporterVersion>1.6.9</XMI.exporterVersion>
+   <XMI.exporterEncoding>UnicodeUTF8</XMI.exporterEncoding>
+  </XMI.documentation>
+  <XMI.metamodel href="UML.xml" xmi.name="UML" xmi.version="1.3"/>
+ </XMI.header>
+ <XMI.content>
+  <UML:Model isLeaf="false" isAbstract="false" isSpecification="false" xmi.id="m1" isRoot="false" name="UML Model">
+   <UML:Namespace.ownedElement>
+    <UML:Stereotype isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="folder" namespace="m1" name="folder"/>
+    <UML:Stereotype isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="datatype" namespace="m1" name="datatype"/>
+    <UML:Model isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="Logical View" namespace="m1" name="Logical View">
+     <UML:Namespace.ownedElement>
+      <UML:Package stereotype="folder" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="Datatypes" namespace="Logical View" name="Datatypes">
+       <UML:Namespace.ownedElement>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="NGiPv9txCZLf" namespace="Datatypes" name="int"/>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="QzrGoeyV9U3X" namespace="Datatypes" name="char"/>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="Ov09wwpIBVf6" namespace="Datatypes" name="bool"/>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="eW1p4KUUKJi8" namespace="Datatypes" name="float"/>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="xhc79deXWdfT" namespace="Datatypes" name="double"/>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="XUjixMmbsnQw" namespace="Datatypes" name="short"/>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="8tOQC7W8m6Dt" namespace="Datatypes" name="long"/>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="krRGS6h0YOgV" namespace="Datatypes" name="unsigned int"/>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="kT4dEVXMMwkW" namespace="Datatypes" name="unsigned short"/>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="1HelLre5h3K7" namespace="Datatypes" name="unsigned long"/>
+        <UML:DataType stereotype="datatype" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="7z7fOo86FDhT" namespace="Datatypes" name="string"/>
+       </UML:Namespace.ownedElement>
+      </UML:Package>
+      <UML:Class isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="3pJYdqdu6NfD" namespace="Logical View" name="CameraManager.java">
+       <UML:Classifier.feature>
+        <UML:Operation isQuery="false" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="CuIhxX5yMPWy" name="opencamera">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="D8sKVYVvoTra" value="" name="cameraId" type="7z7fOo86FDhT"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="qXuAq7SePim6" value="" name="callback" type="ztYTOU0ZMIEH"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="8O17kYSa6Njw" value="" name="handler" type="StyNq9jJo0Yv"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="/**&#xa;514     * Open a connection to a camera with the given ID, on behalf of another application&#xa;515     * specified by clientUid.&#xa;516     *&#xa;517     * &lt;p>The behavior of this method matches that of {@link #openCamera}, except that it allows&#xa;518     * the caller to specify the UID to use for permission/etc verification. This can only be&#xa;519     * done by services trusted by the camera subsystem to act on behalf of applications and&#xa;520     * to forward the real UID.&lt;/p>&#xa;521     *&#xa;522     * @param clientUid&#xa;523     *             The UID of the application on whose behalf the camera is being opened.&#xa;524     *             Must be USE_CALLING_UID unless the caller is a trusted service.&#xa;525     *&#xa;526     * @hide&#xa;527     */" isQuery="false" isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="UBYrrKxJBtez" name="openCameraForUid">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="2LGrLpmRBnYu" value="" name="cameraId" type="7z7fOo86FDhT"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="JzSPMBJoKpfB" value="" name="callback" type="ztYTOU0ZMIEH"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="K5EWskO9jqZ3" value="" name="executor" type="8aTJT5JWRXLm"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="0qpKgSUo2x5U" value="" name="clientUid" type="NGiPv9txCZLf"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isQuery="false" isLeaf="false" isAbstract="false" visibility="private" isSpecification="false" isRoot="false" xmi.id="0MyRuJCEOQiE" name="openCameraDeviceUserAsync">
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="86NsvuvvjjFP" value="" name="cameraId" type="7z7fOo86FDhT"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="tEjFeSTnWodR" value="" name="exector" type="BhBCcGedbc4V"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="hWMQFanPFybs" value="" name="uid" type="NGiPv9txCZLf"/>
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+       </UML:Classifier.feature>
+      </UML:Class>
+      <UML:Class isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="ztYTOU0ZMIEH" namespace="Logical View" name="CameraDevice.StateCallback"/>
+      <UML:Class isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="StyNq9jJo0Yv" namespace="Logical View" name="Handler"/>
+      <UML:Class isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="8aTJT5JWRXLm" namespace="Logical View" name="Executor"/>
+      <UML:Class isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="BhBCcGedbc4V" namespace="Logical View" name="Exector"/>
+     </UML:Namespace.ownedElement>
+     <XMI.extension xmi.extender="umbrello">
+      <diagrams>
+       <diagram showpubliconly="0" showstereotype="1" showattribassocs="1" showscope="1" xmi.id="hXWYOttVn1wf" font="Sans Serif,9,-1,5,50,0,0,0,0,0" localid="-1" linecolor="#ff0000" backgroundcolor="#ffffff" showgrid="0" showpackage="1" usefillcolor="1" isopen="1" canvaswidth="658.926" documentation="" canvasheight="83.4688" fillcolor="#ffff00" snapx="25" snapcsgrid="0" zoom="132.25" griddotcolor="#d3d3d3" linewidth="0" showopsig="1" snapy="25" type="1" showops="1" showattsig="1" textcolor="#000000" name="class diagram" showatts="1" snapgrid="0">
+        <widgets>
+         <classwidget showstereotype="1" showpubliconly="0" showopsigs="601" showattsigs="601" usesdiagramfillcolor="0" showattributes="1" showscope="1" localid="RIywoY4xUVwY" xmi.id="3pJYdqdu6NfD" font="Sans Serif,9,-1,5,50,0,0,0,0,0" linecolor="#ff0000" y="-2888.47" showpackage="1" usefillcolor="1" isinstance="0" usesdiagramusefillcolor="0" showoperations="1" fillcolor="#ffff00" linewidth="0" width="644" height="81" x="-6009.07" textcolor="#000000"/>
+        </widgets>
+        <messages/>
+        <associations/>
+       </diagram>
+      </diagrams>
+     </XMI.extension>
+    </UML:Model>
+    <UML:Model isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="Use Case View" namespace="m1" name="Use Case View">
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+    <UML:Model isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="Component View" namespace="m1" name="Component View">
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+    <UML:Model isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="Deployment View" namespace="m1" name="Deployment View">
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+    <UML:Model isLeaf="false" isAbstract="false" visibility="public" isSpecification="false" isRoot="false" xmi.id="Entity Relationship Model" namespace="m1" name="Entity Relationship Model">
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+   </UML:Namespace.ownedElement>
+  </UML:Model>
+ </XMI.content>
+ <XMI.extensions xmi.extender="umbrello">
+  <docsettings uniqueid="hWMQFanPFybs" viewid="hXWYOttVn1wf" documentation=""/>
+  <listview>
+   <listitem id="Views" type="800" open="1">
+    <listitem id="Component View" type="821" open="1"/>
+    <listitem id="Deployment View" type="827" open="1"/>
+    <listitem id="Entity Relationship Model" type="836" open="1"/>
+    <listitem id="Logical View" type="801" open="1">
+     <listitem id="ztYTOU0ZMIEH" type="813" open="1"/>
+     <listitem id="3pJYdqdu6NfD" type="813" open="1">
+      <listitem id="CuIhxX5yMPWy" type="815" open="0"/>
+      <listitem id="0MyRuJCEOQiE" type="815" open="0"/>
+      <listitem id="UBYrrKxJBtez" type="815" open="0"/>
+     </listitem>
+     <listitem id="hXWYOttVn1wf" label="class diagram" type="807" open="0"/>
+     <listitem id="Datatypes" type="830" open="0">
+      <listitem id="Ov09wwpIBVf6" type="829" open="1"/>
+      <listitem id="QzrGoeyV9U3X" type="829" open="1"/>
+      <listitem id="xhc79deXWdfT" type="829" open="1"/>
+      <listitem id="eW1p4KUUKJi8" type="829" open="1"/>
+      <listitem id="NGiPv9txCZLf" type="829" open="1"/>
+      <listitem id="8tOQC7W8m6Dt" type="829" open="1"/>
+      <listitem id="XUjixMmbsnQw" type="829" open="1"/>
+      <listitem id="7z7fOo86FDhT" type="829" open="1"/>
+      <listitem id="krRGS6h0YOgV" type="829" open="1"/>
+      <listitem id="1HelLre5h3K7" type="829" open="1"/>
+      <listitem id="kT4dEVXMMwkW" type="829" open="1"/>
+     </listitem>
+     <listitem id="BhBCcGedbc4V" type="813" open="1"/>
+     <listitem id="8aTJT5JWRXLm" type="813" open="1"/>
+     <listitem id="StyNq9jJo0Yv" type="813" open="1"/>
+    </listitem>
+    <listitem id="Use Case View" type="802" open="1"/>
+   </listitem>
+  </listview>
+  <codegeneration>
+   <codegenerator language="C++">
+    <sourcecode id="CuIhxX5yMPWy" value=" public void openCamera(@NonNull String cameraId,&#xa;            @NonNull final CameraDevice.StateCallback callback, @Nullable Handler handler)&#xa;            throws CameraAccessException {&#xa;        openCameraForUid(cameraId, callback, CameraDeviceImpl.checkAndWrapHandler(handler),&#xa;                USE_CALLING_UID);&#xa;   }"/>
+    <sourcecode id="UBYrrKxJBtez" value="public void openCameraForUid(@NonNull String cameraId,&#xa;529            @NonNull final CameraDevice.StateCallback callback, @NonNull Executor executor,&#xa;530            int clientUid)&#xa;531            throws CameraAccessException {&#xa;532&#xa;533        if (cameraId == null) {&#xa;534            throw new IllegalArgumentException(&quot;cameraId was null&quot;);&#xa;535        } else if (callback == null) {&#xa;536            throw new IllegalArgumentException(&quot;callback was null&quot;);&#xa;537        }&#xa;538        if (CameraManagerGlobal.sCameraServiceDisabled) {&#xa;539            throw new IllegalArgumentException(&quot;No cameras available on device&quot;);&#xa;       }&#xa;&#xa;        openCameraDeviceUserAsync(cameraId, callback, executor, clientUid);&#xa;    }"/>
+   </codegenerator>
+  </codegeneration>
+ </XMI.extensions>
+</XMI>

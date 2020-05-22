@@ -1,0 +1,43 @@
+
+
+else { /* check if the resolution is 16:9 */
+          if (fabs(((float)local_data->sensor_cap.dim_fps_table[i].dim.width) /
+             ((float)local_data->sensor_cap.dim_fps_table[i].dim.height)-1.778)
+              <= 0.1) {
+            vid_sensor_width =
+              local_data->sensor_cap.dim_fps_table[i].dim.width;
+            vid_sensor_height =
+              local_data->sensor_cap.dim_fps_table[i].dim.height;
+          }
+
+
+    /*QUADRA_CFA_MODE  add dinghao1 for HWQuadRaw Mode */
+    else if (local_data->sensor_cap.dim_fps_table[i].mode == (1 << 5)) {        local_data->sensor_cap.dim_fps_table[i].mode第五位是否为1
+      if (local_data->sensor_cap.dim_fps_table[i].dim.width >=
+        quadra_cfa_width &&
+        local_data->sensor_cap.dim_fps_table[i].dim.height >=
+        quadra_cfa_height) {
+        remosaic_lib_present = TRUE;
+        quadra_cfa_width =
+          local_data->sensor_cap.dim_fps_table[i].dim.width;
+        quadra_cfa_height =
+          local_data->sensor_cap.dim_fps_table[i].dim.height;
+      }
+	CLOGE(CAM_MCT_MODULE, "Tanghao quadra_cfa_width = %d,quadra_cfa_height = %d",quadra_cfa_width,quadra_cfa_height);
+    }
+
+    if (local_data->sensor_cap.dim_fps_table[i].dim.width >
+        snap_sensor_width
+        && local_data->sensor_cap.dim_fps_table[i].dim.height >
+        snap_sensor_height) {
+      if ((local_data->sensor_cap.dim_fps_table[i].mode != (1 << 5))) {
+        snap_sensor_width  =
+          local_data->sensor_cap.dim_fps_table[i].dim.width;
+        snap_sensor_height =
+          local_data->sensor_cap.dim_fps_table[i].dim.height;
+        snap_sensor_min_duration =
+          1e9 / local_data->sensor_cap.dim_fps_table[i].fps.max_fps;
+      }
+    }
+	CLOGE(CAM_MCT_MODULE, "Tanghao quadra_cfa_width = %d,quadra_cfa_height = %d",quadra_cfa_width,quadra_cfa_height);
+  } /*for loop*/
